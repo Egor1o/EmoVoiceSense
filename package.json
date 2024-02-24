@@ -9,9 +9,20 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "resolutions": {
+    "styled-components": "^5"
+  },
+  "babel": {
+    "presets": [],
+    "plugins": [
+      "babel-plugin-styled-components"
+    ]
+  },
   "dependencies": {
+    "@tanstack/react-query": "^5.22.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
@@ -19,6 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
