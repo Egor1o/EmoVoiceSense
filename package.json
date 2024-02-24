@@ -20,10 +20,9 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.22.2",
-    "@tensorflow/tfjs": "^4.17.0",
+    "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-py": "^1.10.7",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
