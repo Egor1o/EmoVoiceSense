@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import AudioRecorder from "./AudioRecorder.tsx";
 
 type Props = {
     onPress: () => void;
@@ -6,6 +7,7 @@ type Props = {
 const RecordingButton = (props : Props) => {
 return (<ButtonContainer>
     <RecordButton onClick={props.onPress}/>
+    <AudioRecorder />
 </ButtonContainer>)
 }
 
