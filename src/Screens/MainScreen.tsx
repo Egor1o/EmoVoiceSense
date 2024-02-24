@@ -1,20 +1,50 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import axios from "axios";
+import {
+  IMediaRecorder,
+  MediaRecorder,
+  register,
+} from "extendable-media-recorder";
+import { connect } from "extendable-media-recorder-wav-encoder";
+
+await register(await connect());
+
+const format = "wav";
 
 const MainScreen = () => {
   const [hasPermissions, setHasPermissions] = useState(false);
-  const mediaRecorder = useRef<MediaRecorder | null>(null);
+  const mediaRecorder = useRef<IMediaRecorder | null>(null);
   const [recordingStatus, setRecordingStatus] = useState("inactive");
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [audio, setAudio] = useState("");
+
+  const getData = async (audioBlob: Blob) => {
+    const formData = new FormData();
+    formData.append("speech", audioBlob, `recording.wav`);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5173/api/analyze",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      console.log(response.data);
+    } catch (e) {
+      console.log("error");
+    }
+  };
 
   const getMicrophonePermission = async () => {
     if ("MediaRecorder" in window) {
       try {
         const streamData = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: false,
         });
         setHasPermissions(true);
         setStream(streamData);
@@ -31,9 +61,7 @@ const MainScreen = () => {
   const startRecording = async () => {
     setRecordingStatus("recording");
     if (stream) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      const media = new MediaRecorder(stream, { type: "audio/wav" });
+      const media = new MediaRecorder(stream, { mimeType: "audio/wav" });
       //set the MediaRecorder instance to the mediaRecorder ref
       mediaRecorder.current = media;
       //invokes the start method to start the recording process
@@ -55,9 +83,10 @@ const MainScreen = () => {
       mediaRecorder.current.stop();
       mediaRecorder.current.onstop = () => {
         //creates a blob file from the audiochunks data
-        const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+        const audioBlob = new Blob(audioChunks, { type: `audio/${format}` });
         //creates a playable URL from the blob file.
         const audioUrl = URL.createObjectURL(audioBlob);
+        getData(audioBlob);
         setAudio(audioUrl);
         setAudioChunks([]);
       };
