@@ -108,12 +108,8 @@ const MainScreen = () => {
       <div>
         {emotion !== "" ? (
           <EmotionContainerDev>
-            <StyledText>You are {emotion}</StyledText>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            feugiat urna non nulla sollicitudin pharetra. Fusce maximus blandit
-            lectus at laoreet. Cras blandit congue lacus, vel rutrum augue
-            ultricies nec. Suspendisse id magna sollicitudin, consequat nibh
-            non, vulputate justo. Etiam varius sit amet felis at vulputate.
+            <StyledText>You are {emotion.split("\n")[0]}</StyledText>
+            {emotion.split("\n")[1]}
             <button
               onClick={goBack}
               style={{
