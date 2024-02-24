@@ -18,14 +18,14 @@ const MainScreen = () => {
   const [recordingStatus, setRecordingStatus] = useState("inactive");
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
-  const [audio, setAudio] = useState("");
+  const [emotion, setEmotion] = useState("");
 
   const getData = async (audioBlob: Blob) => {
     const formData = new FormData();
     formData.append("speech", audioBlob, `recording.wav`);
 
     try {
-      const response = await axios.post(
+      const response = await axios.post<string>(
         "http://localhost:5173/api/analyze",
         formData,
         {
@@ -34,7 +34,7 @@ const MainScreen = () => {
           },
         },
       );
-      console.log(response.data);
+      setEmotion(response.data);
     } catch (e) {
       console.log("error");
     }
@@ -84,10 +84,7 @@ const MainScreen = () => {
       mediaRecorder.current.onstop = () => {
         //creates a blob file from the audiochunks data
         const audioBlob = new Blob(audioChunks, { type: `audio/${format}` });
-        //creates a playable URL from the blob file.
-        const audioUrl = URL.createObjectURL(audioBlob);
         getData(audioBlob);
-        setAudio(audioUrl);
         setAudioChunks([]);
       };
     }
@@ -97,7 +94,11 @@ const MainScreen = () => {
     <ScreenContainer>
       <h2>Audio Recorder</h2>
       <div>
-        {!hasPermissions ? (
+        {emotion !== "" ? (
+          <div>
+            <h2>You are {emotion}</h2>
+          </div>
+        ) : !hasPermissions ? (
           <>
             <p>You must give permission for using your microphone first</p>
             <button onClick={getMicrophonePermission} type="button">
@@ -117,7 +118,12 @@ const MainScreen = () => {
             </button>
           </>
         ) : null}
-        {audio !== "" ? (
+      </div>
+    </ScreenContainer>
+  );
+};
+/*
+* {audio !== "" ? (
           <div className="audio-container">
             <audio src={audio} controls></audio>
             <a download href={audio}>
@@ -125,11 +131,8 @@ const MainScreen = () => {
             </a>
           </div>
         ) : null}
-      </div>
-    </ScreenContainer>
-  );
-};
-
+*
+* */
 const ScreenContainer = styled.div`
   display: flex;
   flex-direction: column;
