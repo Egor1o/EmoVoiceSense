@@ -5,8 +5,9 @@ type Props = {
     onPress: () => void;
 };
 const RecordingButton = (props : Props) => {
+    const press = props.onPress
+    press()
 return (<ButtonContainer>
-    <RecordButton onClick={props.onPress}/>
     <AudioRecorder />
 </ButtonContainer>)
 }
@@ -14,9 +15,7 @@ return (<ButtonContainer>
 const ButtonContainer = styled.div`
     color: #747bff;
 `
-const RecordButton = styled.button`
-    background-color: #646cff;
-`
+
 
 
 export default RecordingButton
