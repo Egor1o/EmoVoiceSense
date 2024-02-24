@@ -81,6 +81,12 @@ const MainScreen = () => {
     //stops the recording instance
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
+      if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => {
+          track.stop();
+        });
+      }
       mediaRecorder.current.onstop = () => {
         //creates a blob file from the audiochunks data
         const audioBlob = new Blob(audioChunks, { type: `audio/${format}` });
@@ -90,21 +96,34 @@ const MainScreen = () => {
     }
   };
 
+  const goBack = () => {
+    setRecordingStatus("inactive");
+    setAudioChunks([]);
+    setEmotion("");
+  };
+
   return (
     <ScreenContainer>
-      <h2>Audio Recorder</h2>
+      <h2>EmoVoiceSense</h2>
       <div>
         {emotion !== "" ? (
           <EmotionContainerDev>
-            <p>You are {emotion}</p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              feugiat urna non nulla sollicitudin pharetra. Fusce maximus
-              blandit lectus at laoreet. Cras blandit congue lacus, vel rutrum
-              augue ultricies nec. Suspendisse id magna sollicitudin, consequat
-              nibh non, vulputate justo. Etiam varius sit amet felis at
-              vulputate.
-            </p>
+            <StyledText>You are {emotion}</StyledText>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+            feugiat urna non nulla sollicitudin pharetra. Fusce maximus blandit
+            lectus at laoreet. Cras blandit congue lacus, vel rutrum augue
+            ultricies nec. Suspendisse id magna sollicitudin, consequat nibh
+            non, vulputate justo. Etiam varius sit amet felis at vulputate.
+            <button
+              onClick={goBack}
+              style={{
+                width: "10rem",
+                alignSelf: "flex-end",
+                marginTop: "1rem",
+              }}
+            >
+              Go back
+            </button>
           </EmotionContainerDev>
         ) : !hasPermissions ? (
           <>
@@ -147,6 +166,11 @@ const ScreenContainer = styled.div`
   flex: 1;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledText = styled.p`
+  font-size: 24px;
+  font-weight: bold;
 `;
 
 const EmotionContainerDev = styled.div`
